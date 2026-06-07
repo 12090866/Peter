@@ -29,9 +29,9 @@ export default function QuotePdfModal({ isOpen, onClose, result }) {
   const rows = [
     ['內頁紙張', `${paper.selectedPaper}，${formatNumber(paper.innerReams, 2)} 令`, paper.innerPaperCost],
     ['封面紙張', `${paper.coverPaper}，${formatNumber(paper.coverReams, 2)} 令`, paper.coverPaperCost],
-    ['製版費', `${plates.totalPlates} 版`, plates.plateCost],
-    ['內頁印刷', `${formatNumber(printing.innerKiloRuns, 2)} 千車 x ${units.billingUnits} 台`, printing.innerPrintingCost],
-    ['封面印刷', `${formatNumber(printing.coverKiloRuns, 2)} 千車`, printing.coverPrintingCost],
+    ['製版費', `封面 ${plates.coverPlates} 版，內頁 ${plates.innerPlates} 版`, plates.plateCost],
+    ['內頁印刷', `${formatNumber(printing.innerKiloRuns, 2)} 千車 x ${printing.innerBillingColorCount} 計價色 x ${units.billingUnits} 台`, printing.innerPrintingCost],
+    ['封面印刷', `${formatNumber(printing.coverKiloRuns, 2)} 千車 x ${printing.coverBillingColorCount} 計價色`, printing.coverPrintingCost],
     ['後加工', finishing.selectedFinishing.join('、') || '無', finishing.finishingCost],
     ['裝訂', `${binding.bindingType}，計 ${formatNumber(binding.bindingQuantity)} 本`, binding.bindingCost],
   ];

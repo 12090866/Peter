@@ -98,19 +98,42 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
             <PriceRow label="封面版數" value={plates.coverPlates} unit="版" />
             <PriceRow label="內頁版數" value={plates.innerPlates} unit="版" />
             <PriceRow label="總版數" value={plates.totalPlates} unit="版" />
+            <PriceRow
+              label="封面製版費"
+              value={plates.coverPlateCost}
+              isCurrency
+              formula={`${plates.coverPlates} 版 x ${plates.coverPlateUnitPrice}`}
+              showFormula
+            />
+            <PriceRow
+              label="內頁製版費"
+              value={plates.innerPlateCost}
+              isCurrency
+              formula={`${plates.innerPlates} 版 x ${plates.innerPlateUnitPrice}`}
+              showFormula
+            />
             <PriceRow label="製版費" value={plates.plateCost} isCurrency highlight />
             <div className="breakdown-divider" />
-            <PriceRow label="封面印刷" value={printing.coverPrintingCost} isCurrency />
+            <PriceRow
+              label="封面印刷"
+              value={printing.coverPrintingCost}
+              isCurrency
+              formula={`${printing.coverKiloRuns.toFixed(2)} 千車 x ${printing.coverBillingColorCount} 計價色`}
+              showFormula
+            />
             <PriceRow
               label="內頁印刷"
               value={printing.innerPrintingCost}
               isCurrency
-              formula={`${printing.innerKiloRuns.toFixed(2)} 千車 x ${printSettings.innerColorCount} 色 x ${units.billingUnits} 台`}
+              formula={`${printing.innerKiloRuns.toFixed(2)} 千車 x ${printing.innerBillingColorCount} 計價色 x ${units.billingUnits} 台`}
               showFormula
             />
+            <PriceRow label="內頁實際色數" value={printSettings.innerColorCount} unit="色" />
           </BreakdownCard>
 
           <BreakdownCard title="後加工與裝訂">
+            <PriceRow label="封面後加工計價車數" value={finishing.coverCountedRuns} unit="車" />
+            <PriceRow label="內頁後加工計價車數" value={finishing.innerCountedRuns} unit="車" />
             {finishing.selectedFinishing.length > 0 ? (
               finishing.selectedFinishing.map((item) => (
                 <PriceRow

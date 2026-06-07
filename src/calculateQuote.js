@@ -5,9 +5,10 @@ import {
   defaultCoverPaper,
   defaultCoverPrintSides,
   finishingPrices,
+  coverPlateUnitPrice,
+  innerPlateUnitPrice,
   innerPrintingUnitPrice,
   paperPrices,
-  plateUnitPrice,
   sizeConfig,
 } from './priceConfig';
 import { getBillingKiloRuns } from './utils/math';
@@ -73,9 +74,25 @@ export function calculatePlates({
   const coverPlates = coverPrintSides * coverColorCount;
   const innerPlates = innerPrintSides * innerColorCount * billingUnits;
   const totalPlates = coverPlates + innerPlates;
-  const plateCost = totalPlates * plateUnitPrice;
+  const coverPlateCost = coverPlates * coverPlateUnitPrice;
+  const innerPlateCost = innerPlates * innerPlateUnitPrice;
+  const plateCost = coverPlateCost + innerPlateCost;
 
-  return { coverPlates, innerPlates, totalPlates, plateUnitPrice, plateCost };
+  return {
+    coverPlates,
+    innerPlates,
+    totalPlates,
+    coverPlateUnitPrice,
+    innerPlateUnitPrice,
+    coverPlateCost,
+    innerPlateCost,
+    plateCost,
+  };
+}
+
+export function getPrintingBillingColorCount(colorCount) {
+  const colors = Number(colorCount) || 0;
+  return colors > 4 ? colors + 2 : colors;
 }
 
 export function calculatePrinting({
@@ -87,28 +104,38 @@ export function calculatePrinting({
 }) {
   const coverRuns = coverSheets;
   const coverKiloRuns = getBillingKiloRuns(coverRuns);
+  const coverBillingColorCount = getPrintingBillingColorCount(coverColorCount);
   const coverPrintingCost =
-    coverKiloRuns * coverColorCount * coverPrintingUnitPrice;
+    coverKiloRuns * coverBillingColorCount * coverPrintingUnitPrice;
 
   const innerRuns = quantity;
   const innerKiloRuns = getBillingKiloRuns(innerRuns);
+  const innerBillingColorCount = getPrintingBillingColorCount(innerColorCount);
   const innerPrintingCost =
-    innerKiloRuns * innerColorCount * innerPrintingUnitPrice * billingUnits;
+    innerKiloRuns * innerBillingColorCount * innerPrintingUnitPrice * billingUnits;
 
   return {
     coverRuns,
     coverKiloRuns,
+    coverBillingColorCount,
     coverPrintingUnitPrice,
     coverPrintingCost,
     innerRuns,
     innerKiloRuns,
+    innerBillingColorCount,
     innerPrintingUnitPrice,
     innerPrintingCost,
   };
 }
 
-export function calculateFinishing(selectedFinishing = [], coverRuns) {
+export function calculateFinishing(
+  selectedFinishing = [],
+  { coverRuns, innerRuns, billingUnits },
+) {
   const breakdown = {};
+  const coverCountedRuns = Math.max(Number(coverRuns) || 0, 1000);
+  const innerCountedRuns = Math.max(Number(innerRuns) || 0, 1000);
+
   const finishingCost = selectedFinishing.reduce((total, item) => {
     const config = finishingPrices[item];
     if (!config) {
@@ -116,17 +143,28 @@ export function calculateFinishing(selectedFinishing = [], coverRuns) {
       return total;
     }
 
-    const variableCost = coverRuns * config.unitPrice;
-    const cost =
-      config.type === 'basePlusPerRun'
-        ? Math.max(config.basePrice, variableCost)
-        : variableCost;
+    let cost = 0;
+    if (config.type === 'coverCoating') {
+      cost = coverCountedRuns * config.unitPrice;
+    } else if (config.type === 'innerCoating') {
+      cost = innerCountedRuns * config.unitPrice * billingUnits;
+    } else if (config.type === 'localUv') {
+      cost = coverCountedRuns * config.unitPrice;
+    } else if (config.type === 'flat') {
+      cost = config.amount;
+    }
 
     breakdown[item] = cost;
     return total + cost;
   }, 0);
 
-  return { selectedFinishing, breakdown, finishingCost };
+  return {
+    selectedFinishing,
+    breakdown,
+    coverCountedRuns,
+    innerCountedRuns,
+    finishingCost,
+  };
 }
 
 export function calculateBinding(bindingType, quantity, billingUnits) {
@@ -258,7 +296,11 @@ export function calculateQuote(input) {
 
   const finishing = calculateFinishing(
     normalizedInput.selectedFinishing || [],
-    paper.coverSheets,
+    {
+      coverRuns: paper.coverSheets,
+      innerRuns: quantity,
+      billingUnits: units.billingUnits,
+    },
   );
   const binding = calculateBinding(
     normalizedInput.bindingType,

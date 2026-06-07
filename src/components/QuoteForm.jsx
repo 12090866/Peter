@@ -74,8 +74,8 @@ export default function QuoteForm({ input, onChange, debugMode }) {
           <div className="nl-template-buttons">
             {[
               'A4 膠裝 84頁 500本，高級道林120p，雙面單色，無後加工',
-              'G16K 騎馬釘 64頁 1000本，雪銅120p，雙面四色，上霧膜',
-              '16K 精裝 96頁 200本，銅西卡250p，雙面四色，局部上光',
+              'G16K 騎馬釘 64頁 1000本，雪銅120p，雙面四色，封面霧P',
+              '16K 精裝 96頁 200本，銅西卡250p，雙面六色，局部光加版費',
             ].map((template) => (
               <button
                 key={template}
@@ -189,8 +189,11 @@ export default function QuoteForm({ input, onChange, debugMode }) {
                     handleChange('innerColorCount', Number(event.target.value))
                   }
                 >
-                  <option value={1}>1 色</option>
-                  <option value={4}>4 色</option>
+                  {[1, 2, 3, 4, 5, 6].map((colorCount) => (
+                    <option key={colorCount} value={colorCount}>
+                      {colorCount} 色
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

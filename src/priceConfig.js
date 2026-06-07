@@ -105,15 +105,22 @@ export const paperPrices = {
 
 export const paperOptions = Object.keys(paperPrices);
 
-export const plateUnitPrice = 150;
+export const coverPlateUnitPrice = 150;
+export const innerPlateUnitPrice = 150;
 export const coverPrintingUnitPrice = 1000;
 export const innerPrintingUnitPrice = 1000;
 
 export const finishingPrices = {
-  上亮膜: { type: 'perRun', unitPrice: 10 },
-  上霧膜: { type: 'perRun', unitPrice: 15 },
-  局部上光: { type: 'basePlusPerRun', basePrice: 1500, unitPrice: 5 },
-  燙金: { type: 'basePlusPerRun', basePrice: 2000, unitPrice: 8 },
+  封面亮P: { type: 'coverCoating', unitPrice: 1.2 },
+  封面霧P: { type: 'coverCoating', unitPrice: 1.2 },
+  封面水亮: { type: 'coverCoating', unitPrice: 1.2 },
+  封面水消: { type: 'coverCoating', unitPrice: 1.2 },
+  內頁亮P: { type: 'innerCoating', unitPrice: 1.2 },
+  內頁霧P: { type: 'innerCoating', unitPrice: 1.2 },
+  內頁水亮: { type: 'innerCoating', unitPrice: 1.2 },
+  內頁水消: { type: 'innerCoating', unitPrice: 1.2 },
+  局部光: { type: 'localUv', unitPrice: 2.5 },
+  局部光版費: { type: 'flat', amount: 800 },
 };
 
 export const finishingOptions = Object.keys(finishingPrices);
