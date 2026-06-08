@@ -96,6 +96,7 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
 
           <BreakdownCard title="製版與印刷">
             <PriceRow label="封面版數" value={plates.coverPlates} unit="版" />
+            <PriceRow label="封面實際色數" value={printSettings.coverColorCount} unit="色" />
             <PriceRow label="內頁版數" value={plates.innerPlates} unit="版" />
             <PriceRow label="總版數" value={plates.totalPlates} unit="版" />
             <PriceRow

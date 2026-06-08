@@ -60,7 +60,7 @@ export default function QuoteForm({ input, onChange, debugMode }) {
               rows="3"
               value={nlText}
               onChange={(event) => setNlText(event.target.value)}
-              placeholder="例：A4 膠裝 84頁 500本，內頁高級道林120p，雙面單色，無後加工"
+              placeholder="例：A4 膠裝 84頁 500本，封面銅西卡250p四色，內頁高級道林120p雙面單色，無後加工"
             />
           </div>
           <button
@@ -73,7 +73,7 @@ export default function QuoteForm({ input, onChange, debugMode }) {
           </button>
           <div className="nl-template-buttons">
             {[
-              'A4 膠裝 84頁 500本，高級道林120p，雙面單色，無後加工',
+              'A4 膠裝 84頁 500本，封面銅西卡250p四色，內頁高級道林120p，雙面單色，無後加工',
               'G16K 騎馬釘 64頁 1000本，雪銅120p，雙面四色，封面霧P',
               '16K 精裝 96頁 200本，銅西卡250p，雙面六色，局部光加版費',
             ].map((template) => (
@@ -162,11 +162,41 @@ export default function QuoteForm({ input, onChange, debugMode }) {
                 </option>
               ))}
             </select>
-            <p className="form-hint">封面預設以銅西卡250p估算。</p>
+          </div>
+          <div className={`form-group field-transition ${getHighlightClass('coverPaperType')}`}>
+            <label className="form-label">封面紙張</label>
+            <select
+              className="form-select"
+              value={input.coverPaperType || paperOptions[0]}
+              onChange={(event) => handleChange('coverPaperType', event.target.value)}
+            >
+              {paperOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
 
           {debugMode && (
-            <div className="form-row">
+            <>
+              <div className="form-row">
+                <div className={`form-group form-group-half field-transition ${getHighlightClass('coverColorCount')}`}>
+                  <label className="form-label">封面色數</label>
+                  <ColorSelect
+                    value={input.coverColorCount || 4}
+                    onChange={(value) => handleChange('coverColorCount', value)}
+                  />
+                </div>
+                <div className={`form-group form-group-half field-transition ${getHighlightClass('innerColorCount')}`}>
+                  <label className="form-label">內頁色數</label>
+                  <ColorSelect
+                    value={input.innerColorCount}
+                    onChange={(value) => handleChange('innerColorCount', value)}
+                  />
+                </div>
+              </div>
+              <div className="form-row">
               <div className={`form-group form-group-half field-transition ${getHighlightClass('innerPrintSides')}`}>
                 <label className="form-label">內頁面數</label>
                 <select
@@ -180,23 +210,8 @@ export default function QuoteForm({ input, onChange, debugMode }) {
                   <option value={2}>雙面</option>
                 </select>
               </div>
-              <div className={`form-group form-group-half field-transition ${getHighlightClass('innerColorCount')}`}>
-                <label className="form-label">內頁色數</label>
-                <select
-                  className="form-select"
-                  value={input.innerColorCount}
-                  onChange={(event) =>
-                    handleChange('innerColorCount', Number(event.target.value))
-                  }
-                >
-                  {[1, 2, 3, 4, 5, 6].map((colorCount) => (
-                    <option key={colorCount} value={colorCount}>
-                      {colorCount} 色
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
+            </>
           )}
         </div>
       </div>
@@ -257,5 +272,21 @@ export default function QuoteForm({ input, onChange, debugMode }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ColorSelect({ value, onChange }) {
+  return (
+    <select
+      className="form-select"
+      value={value}
+      onChange={(event) => onChange(Number(event.target.value))}
+    >
+      {[1, 2, 3, 4, 5, 6].map((colorCount) => (
+        <option key={colorCount} value={colorCount}>
+          {colorCount} 色
+        </option>
+      ))}
+    </select>
   );
 }

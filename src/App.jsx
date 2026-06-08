@@ -18,6 +18,8 @@ export default function App() {
     size: 'A4',
     pages: 84,
     quantity: 500,
+    coverPaperType: '銅西卡250p',
+    coverColorCount: 4,
     paperType: '高級道林120p',
     innerPrintSides: 2,
     innerColorCount: 1,

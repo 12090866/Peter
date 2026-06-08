@@ -31,12 +31,16 @@ export function calculatePaper({
   coverModulo,
   paperSystem,
   selectedPaper,
+  selectedCoverPaper = defaultCoverPaper,
 }) {
   const paper = paperPrices[selectedPaper];
-  const coverPaper = defaultCoverPaper;
+  const coverPaper = selectedCoverPaper || defaultCoverPaper;
 
   if (!paper?.[paperSystem]) {
     throw new Error(`紙張價格尚未設定：${selectedPaper} / ${paperSystem}`);
+  }
+  if (!paperPrices[coverPaper]?.[paperSystem]) {
+    throw new Error(`封面紙張價格尚未設定：${coverPaper} / ${paperSystem}`);
   }
 
   const innerSheets = quantity * theoreticalUnits;
@@ -249,7 +253,7 @@ export function generateAiSummary(result) {
 
   return [
     `${input.size} 採 ${sizeRule.seriesLabel}，每台 ${sizeRule.pagesPerUnit} 頁；${input.pages} 頁折算 ${units.theoreticalUnits.toFixed(2)} 台，報價以 ${units.billingUnits} 台估算。`,
-    `內頁紙張為 ${paper.selectedPaper}，封面預設 ${paper.coverPaper}。`,
+    `內頁紙張為 ${paper.selectedPaper}，封面紙張為 ${paper.coverPaper}。`,
     `裝訂為 ${binding.bindingType}，後加工：${finishingText}。`,
     `目前估算總價約 NT$ ${Math.round(total.totalPrice).toLocaleString('zh-TW')}，單本約 NT$ ${Math.round(total.unitPrice).toLocaleString('zh-TW')}。`,
   ].join(' ');
@@ -269,13 +273,16 @@ export function calculateQuote(input) {
   }
 
   const coverPrintSides = defaultCoverPrintSides;
-  const coverColorCount = defaultCoverColorCount;
+  const coverColorCount = Number(
+    normalizedInput.coverColorCount || defaultCoverColorCount,
+  );
   const paper = calculatePaper({
     quantity,
     theoreticalUnits: units.theoreticalUnits,
     coverModulo: sizeRule.coverModulo,
     paperSystem: sizeRule.paperSystem,
     selectedPaper: normalizedInput.paperType,
+    selectedCoverPaper: normalizedInput.coverPaperType,
   });
 
   const plates = calculatePlates({
