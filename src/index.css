@@ -144,6 +144,31 @@ textarea {
   padding: 22px;
 }
 
+.calculator-tabs {
+  display: flex;
+  gap: 8px;
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 16px 22px 0;
+}
+
+.calculator-tab {
+  min-height: 40px;
+  padding: 9px 16px;
+  color: var(--text-soft);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.calculator-tab-active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
 .main-left {
   position: sticky;
   top: 86px;
@@ -341,6 +366,10 @@ textarea {
   background: var(--panel-muted);
   border: 1px solid var(--border);
   border-radius: 6px;
+}
+
+.form-checkbox-row {
+  margin-bottom: 12px;
 }
 
 .form-checkbox-input {
@@ -830,6 +859,14 @@ textarea {
 @media (max-width: 620px) {
   .main-layout {
     padding: 12px;
+  }
+
+  .calculator-tabs {
+    padding: 12px 12px 0;
+  }
+
+  .calculator-tab {
+    flex: 1;
   }
 
   .form-row,
