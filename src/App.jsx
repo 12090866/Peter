@@ -88,17 +88,20 @@ export default function App() {
               onOpenPdfModal={() => setIsPdfModalOpen(true)}
             />
           ) : (
-            <BoxQuoteResult result={boxResult} debugMode={debugMode} />
+            <BoxQuoteResult
+              result={boxResult}
+              debugMode={debugMode}
+              onOpenPdfModal={() => setIsPdfModalOpen(true)}
+            />
           )}
         </section>
       </main>
-      {isBookCalculator && (
-        <QuotePdfModal
-          isOpen={isPdfModalOpen}
-          onClose={() => setIsPdfModalOpen(false)}
-          result={result}
-        />
-      )}
+      <QuotePdfModal
+        isOpen={isPdfModalOpen}
+        onClose={() => setIsPdfModalOpen(false)}
+        quoteType={isBookCalculator ? 'book' : 'box'}
+        result={isBookCalculator ? result : boxResult}
+      />
     </div>
   );
 }

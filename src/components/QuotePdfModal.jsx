@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { formatCurrency, formatDate, formatNumber } from '../utils/format';
 
-export default function QuotePdfModal({ isOpen, onClose, result }) {
+export default function QuotePdfModal({
+  isOpen,
+  onClose,
+  result,
+  quoteType = 'book',
+}) {
   const [clientName, setClientName] = useState('客戶名稱');
   const [clientContact, setClientContact] = useState('');
   const [quoteId, setQuoteId] = useState('');
@@ -20,21 +25,14 @@ export default function QuotePdfModal({ isOpen, onClose, result }) {
 
   if (!isOpen || !result) return null;
 
-  const { binding, finishing, input, paper, plates, printing, sizeRule, total, units } =
-    result;
+  const { total } = result;
 
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + Number(validDays || 30));
 
-  const rows = [
-    ['內頁紙張', `${paper.selectedPaper}，${formatNumber(paper.innerReams, 2)} 令`, paper.innerPaperCost],
-    ['封面紙張', `${paper.coverPaper}，${formatNumber(paper.coverReams, 2)} 令`, paper.coverPaperCost],
-    ['製版費', `封面 ${plates.coverPlates} 版，內頁 ${plates.innerPlates} 版`, plates.plateCost],
-    ['內頁印刷', `${formatNumber(printing.innerKiloRuns, 2)} 千車 x ${printing.innerBillingColorCount} 計價色 x ${units.billingUnits} 台`, printing.innerPrintingCost],
-    ['封面印刷', `${formatNumber(printing.coverKiloRuns, 2)} 千車 x ${printing.coverBillingColorCount} 計價色`, printing.coverPrintingCost],
-    ['後加工', finishing.selectedFinishing.join('、') || '無', finishing.finishingCost],
-    ['裝訂', `${binding.bindingType}，單價 ${binding.bindingUnitPrice}，基本價 ${formatCurrency(binding.bindingBasePrice)}`, binding.bindingCost],
-  ];
+  const sheet = quoteType === 'box'
+    ? buildBoxQuotationSheet(result)
+    : buildBookQuotationSheet(result);
 
   return (
     <div className="pdf-modal-overlay">
@@ -113,13 +111,13 @@ export default function QuotePdfModal({ isOpen, onClose, result }) {
                 clientContact={clientContact}
                 clientName={clientName}
                 expiryDate={expiryDate}
-                input={input}
                 quoteId={quoteId}
+                quoteKind={sheet.quoteKind}
                 remarks={remarks}
-                rows={rows}
-                sizeRule={sizeRule}
+                rows={sheet.rows}
+                specification={sheet.specification}
                 total={total}
-                units={units}
+                unitLabel={sheet.unitLabel}
               />
             </div>
           </div>
@@ -130,13 +128,13 @@ export default function QuotePdfModal({ isOpen, onClose, result }) {
             clientContact={clientContact}
             clientName={clientName}
             expiryDate={expiryDate}
-            input={input}
             quoteId={quoteId}
+            quoteKind={sheet.quoteKind}
             remarks={remarks}
-            rows={rows}
-            sizeRule={sizeRule}
+            rows={sheet.rows}
+            specification={sheet.specification}
             total={total}
-            units={units}
+            unitLabel={sheet.unitLabel}
           />
         </div>
       </div>
@@ -148,13 +146,13 @@ function QuotationSheet({
   clientContact,
   clientName,
   expiryDate,
-  input,
+  quoteKind,
   quoteId,
   remarks,
   rows,
-  sizeRule,
+  specification,
   total,
-  units,
+  unitLabel,
 }) {
   return (
     <div className="a4-page">
@@ -169,6 +167,7 @@ function QuotationSheet({
         </div>
         <div className="quote-sheet-title-right">
           <h2 className="quote-sheet-main-title">報價單</h2>
+          <p className="quote-sheet-number">{quoteKind}</p>
           <p className="quote-sheet-number">{quoteId}</p>
         </div>
       </div>
@@ -185,9 +184,7 @@ function QuotationSheet({
           </p>
           <p className="meta-row">
             <span className="meta-label">規格</span>
-            <span className="meta-value">
-              {input.size} · {input.pages}頁 · {formatNumber(input.quantity)}本
-            </span>
+            <span className="meta-value">{specification}</span>
           </p>
         </div>
         <div>
@@ -228,7 +225,7 @@ function QuotationSheet({
           </tr>
           <tr>
             <td colSpan="2" className="text-right bold-text">
-              單本成本
+              單{unitLabel}成本
             </td>
             <td className="text-right footer-value">{formatCurrency(total.unitPrice)}</td>
           </tr>
@@ -248,4 +245,51 @@ function QuotationSheet({
       </div>
     </div>
   );
+}
+
+function buildBookQuotationSheet(result) {
+  const { binding, finishing, input, paper, plates, printing, total, units } =
+    result;
+
+  return {
+    quoteKind: '書籍報價',
+    unitLabel: '本',
+    specification: `${input.size} · ${input.pages}頁 · ${formatNumber(input.quantity)}本`,
+    rows: [
+      ['內頁紙張', `${paper.selectedPaper}，${formatNumber(paper.innerReams, 2)} 令`, paper.innerPaperCost],
+      ['封面紙張', `${paper.coverPaper}，${formatNumber(paper.coverReams, 2)} 令`, paper.coverPaperCost],
+      ['製版費', `封面 ${plates.coverPlates} 版，內頁 ${plates.innerPlates} 版`, plates.plateCost],
+      ['內頁印刷', `${formatNumber(printing.innerKiloRuns, 2)} 千車 x ${printing.innerBillingColorCount} 計價色 x ${units.billingUnits} 台`, printing.innerPrintingCost],
+      ['封面印刷', `${formatNumber(printing.coverKiloRuns, 2)} 千車 x ${printing.coverBillingColorCount} 計價色`, printing.coverPrintingCost],
+      ['後加工', finishing.selectedFinishing.join('、') || '無', finishing.finishingCost],
+      ['裝訂', `${binding.bindingType}，單價 ${binding.bindingUnitPrice}，基本價 ${formatCurrency(binding.bindingBasePrice)}`, binding.bindingCost],
+    ],
+    total,
+  };
+}
+
+function buildBoxQuotationSheet(result) {
+  const { finishing, imposition, input, paper, plates, printing, total } = result;
+  const coatingText = finishing.coatingLabels.length
+    ? finishing.coatingLabels.join('、')
+    : '無';
+  const corrugatedText = finishing.corrugatedLabels.length
+    ? finishing.corrugatedLabels.join('、')
+    : '無';
+
+  return {
+    quoteKind: '彩盒報價',
+    unitLabel: '個',
+    specification: `${formatNumber(input.quantity)}個 · 紙張 ${input.sheetLength}x${input.sheetWidth}mm · ${input.impositionCount}模`,
+    rows: [
+      ['紙張', `${paper.paperName}，${formatNumber(paper.paperReams, 2)} 令`, paper.paperCost],
+      ['製版費', `${plates.plateCount} 塊版 x ${plates.plateUnitPrice}`, plates.plateCost],
+      ['印刷費', `${formatNumber(printing.printRuns)} 車，${input.colorCount} 色`, printing.printingCost],
+      ['上光', coatingText, finishing.coatingCost],
+      ['裱浪', `${corrugatedText}，建議拼 ${imposition.suggested} 模`, finishing.corrugatedCost],
+      ['軋型', input.dieCutEnabled ? `${formatNumber(printing.printRuns)} 車 x ${input.dieCutUnitPrice}` : '無', finishing.dieCutCost],
+      ['糊盒', input.gluingEnabled ? `${formatNumber(input.quantity)} 個 x ${input.gluingUnitPrice}` : '無', finishing.gluingCost],
+    ],
+    total,
+  };
 }

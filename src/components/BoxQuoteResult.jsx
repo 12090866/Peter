@@ -3,7 +3,7 @@ import PriceRow from './PriceRow';
 import QuoteSummaryCard from './QuoteSummaryCard';
 import WarningPanel from './WarningPanel';
 
-export default function BoxQuoteResult({ result, debugMode }) {
+export default function BoxQuoteResult({ result, debugMode, onOpenPdfModal }) {
   if (!result) {
     return (
       <div className="quote-result">
@@ -36,7 +36,12 @@ export default function BoxQuoteResult({ result, debugMode }) {
 
   return (
     <div className="quote-result">
-      <QuoteSummaryCard total={total} debugMode={debugMode} unitLabel="個" />
+      <QuoteSummaryCard
+        total={total}
+        debugMode={debugMode}
+        unitLabel="個"
+        onOpenPdfModal={onOpenPdfModal}
+      />
       <WarningPanel warnings={warnings} />
 
       {debugMode && (
