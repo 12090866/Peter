@@ -1,6 +1,11 @@
 import { formatCurrency } from '../utils/format';
 
-export default function QuoteSummaryCard({ total, debugMode, onOpenPdfModal }) {
+export default function QuoteSummaryCard({
+  total,
+  debugMode,
+  onOpenPdfModal,
+  unitLabel = '本',
+}) {
   if (!total) return null;
 
   return (
@@ -18,16 +23,18 @@ export default function QuoteSummaryCard({ total, debugMode, onOpenPdfModal }) {
             <span className="summary-price-value">{formatCurrency(total.totalPrice)}</span>
           </div>
           <div className="summary-price-item summary-price-unit">
-            <span className="summary-price-label">單本成本</span>
+            <span className="summary-price-label">單{unitLabel}成本</span>
             <span className="summary-price-value">
               {formatCurrency(total.unitPrice)}
-              <span className="summary-price-suffix"> / 本</span>
+              <span className="summary-price-suffix"> / {unitLabel}</span>
             </span>
           </div>
         </div>
-        <button type="button" className="btn btn-generate-pdf" onClick={onOpenPdfModal}>
-          產生正式報價單
-        </button>
+        {onOpenPdfModal && (
+          <button type="button" className="btn btn-generate-pdf" onClick={onOpenPdfModal}>
+            產生正式報價單
+          </button>
+        )}
         <p className="summary-disclaimer">
           此為內部快速試算，正式報價需再確認紙價、加工與交期。
         </p>

@@ -14,6 +14,11 @@ export default function BoxQuoteForm({ input, onChange, result }) {
   };
 
   const handleNumberChange = (field, value) => {
+    if (value === '') {
+      handleChange(field, '');
+      return;
+    }
+
     const number = Number(value);
     handleChange(field, Number.isNaN(number) ? '' : number);
   };
@@ -317,7 +322,7 @@ function NumberField({
       <input
         type="number"
         className="form-input"
-        value={value}
+        value={value ?? ''}
         min={min}
         max={max}
         step={step}

@@ -121,7 +121,7 @@ export default function QuoteForm({ input, onChange, debugMode }) {
               <input
                 type="number"
                 className={`form-input ${pageError ? 'form-input-error' : ''}`}
-                value={input.pages}
+                value={input.pages ?? ''}
                 min="4"
                 step="4"
                 onChange={(event) => handleNumberChange('pages', event.target.value)}
@@ -133,7 +133,7 @@ export default function QuoteForm({ input, onChange, debugMode }) {
               <input
                 type="number"
                 className={`form-input ${quantityError ? 'form-input-error' : ''}`}
-                value={input.quantity}
+                value={input.quantity ?? ''}
                 min="1"
                 onChange={(event) => handleNumberChange('quantity', event.target.value)}
               />
@@ -181,12 +181,40 @@ export default function QuoteForm({ input, onChange, debugMode }) {
           {debugMode && (
             <>
               <div className="form-row">
+                <div className={`form-group form-group-half field-transition ${getHighlightClass('coverPrintSides')}`}>
+                  <label className="form-label">封面面數</label>
+                  <select
+                    className="form-select"
+                    value={input.coverPrintSides || 1}
+                    onChange={(event) =>
+                      handleChange('coverPrintSides', Number(event.target.value))
+                    }
+                  >
+                    <option value={1}>單面</option>
+                    <option value={2}>雙面</option>
+                  </select>
+                </div>
                 <div className={`form-group form-group-half field-transition ${getHighlightClass('coverColorCount')}`}>
                   <label className="form-label">封面色數</label>
                   <ColorSelect
                     value={input.coverColorCount || 4}
                     onChange={(value) => handleChange('coverColorCount', value)}
                   />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className={`form-group form-group-half field-transition ${getHighlightClass('innerPrintSides')}`}>
+                  <label className="form-label">內頁面數</label>
+                  <select
+                    className="form-select"
+                    value={input.innerPrintSides}
+                    onChange={(event) =>
+                      handleChange('innerPrintSides', Number(event.target.value))
+                    }
+                  >
+                    <option value={1}>單面</option>
+                    <option value={2}>雙面</option>
+                  </select>
                 </div>
                 <div className={`form-group form-group-half field-transition ${getHighlightClass('innerColorCount')}`}>
                   <label className="form-label">內頁色數</label>
@@ -196,21 +224,6 @@ export default function QuoteForm({ input, onChange, debugMode }) {
                   />
                 </div>
               </div>
-              <div className="form-row">
-              <div className={`form-group form-group-half field-transition ${getHighlightClass('innerPrintSides')}`}>
-                <label className="form-label">內頁面數</label>
-                <select
-                  className="form-select"
-                  value={input.innerPrintSides}
-                  onChange={(event) =>
-                    handleChange('innerPrintSides', Number(event.target.value))
-                  }
-                >
-                  <option value={1}>單面</option>
-                  <option value={2}>雙面</option>
-                </select>
-              </div>
-            </div>
             </>
           )}
         </div>

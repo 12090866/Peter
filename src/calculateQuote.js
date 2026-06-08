@@ -172,16 +172,21 @@ export function calculateFinishing(
 }
 
 export function calculateBinding(bindingType, quantity, billingUnits) {
-  const bindingUnitPrice = bindingPrices[bindingType] || 0;
-  const bindingQuantity = Math.max(quantity, 1000);
-  const bindingCost = bindingUnitPrice * bindingQuantity * billingUnits;
+  const bindingConfig = bindingPrices[bindingType] || { unitPrice: 0, basePrice: 0 };
+  const bindingUnitPrice = bindingConfig.unitPrice;
+  const bindingBasePrice = bindingConfig.basePrice;
+  const bindingQuantity = quantity * billingUnits;
+  const variableBindingCost = bindingUnitPrice * bindingQuantity;
+  const bindingCost = Math.max(variableBindingCost, bindingBasePrice);
 
   return {
     bindingType,
     bindingUnitPrice,
+    bindingBasePrice,
     bindingQuantity,
+    variableBindingCost,
     bindingCost,
-    isMinimumApplied: quantity < 1000,
+    isMinimumApplied: bindingCost === bindingBasePrice && bindingBasePrice > 0,
   };
 }
 
@@ -199,7 +204,7 @@ export function calculateWarnings(input, theoreticalUnits) {
     });
   }
 
-  if (input.bindingType === '精裝' && input.pages < 48) {
+  if (input.bindingType === '線裝' && input.pages < 48) {
     warnings.push({
       type: 'warning',
       message: '頁數較少時使用精裝，單本成本可能偏高。',
@@ -272,7 +277,9 @@ export function calculateQuote(input) {
     return { input: normalizedInput, sizeRule, units, warnings, hasBlockingError };
   }
 
-  const coverPrintSides = defaultCoverPrintSides;
+  const coverPrintSides = Number(
+    normalizedInput.coverPrintSides || defaultCoverPrintSides,
+  );
   const coverColorCount = Number(
     normalizedInput.coverColorCount || defaultCoverColorCount,
   );

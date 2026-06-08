@@ -96,6 +96,7 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
 
           <BreakdownCard title="製版與印刷">
             <PriceRow label="封面版數" value={plates.coverPlates} unit="版" />
+            <PriceRow label="封面面數" value={printSettings.coverPrintSides} unit="面" />
             <PriceRow label="封面實際色數" value={printSettings.coverColorCount} unit="色" />
             <PriceRow label="內頁版數" value={plates.innerPlates} unit="版" />
             <PriceRow label="總版數" value={plates.totalPlates} unit="版" />
@@ -152,6 +153,14 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
             <PriceRow label="裝訂方式" value={binding.bindingType} />
             <PriceRow label="計價本數" value={binding.bindingQuantity} unit="本" />
             <PriceRow label="裝訂單價" value={binding.bindingUnitPrice} isCurrency />
+            <PriceRow label="裝訂基本價" value={binding.bindingBasePrice} isCurrency />
+            <PriceRow
+              label="裝訂變動價"
+              value={binding.variableBindingCost}
+              isCurrency
+              formula={`${binding.bindingQuantity} 本 x ${binding.bindingUnitPrice}`}
+              showFormula
+            />
             <PriceRow label="裝訂費" value={binding.bindingCost} isCurrency highlight />
           </BreakdownCard>
         </>

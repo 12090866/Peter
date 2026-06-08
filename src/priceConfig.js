@@ -126,9 +126,9 @@ export const finishingPrices = {
 export const finishingOptions = Object.keys(finishingPrices);
 
 export const bindingPrices = {
-  騎馬釘: 8,
-  膠裝: 25,
-  線裝: 45,
+  騎馬釘: { unitPrice: 0.2, basePrice: 2000 },
+  膠裝: { unitPrice: 0.3, basePrice: 3000 },
+  線裝: { unitPrice: 0.55, basePrice: 5500 },
 };
 
 export const bindingOptions = Object.keys(bindingPrices);

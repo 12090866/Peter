@@ -29,6 +29,8 @@ export function parseNaturalLanguage(text) {
 
   if (/單面/.test(source)) result.innerPrintSides = 1;
   if (/雙面/.test(source)) result.innerPrintSides = 2;
+  if (/封面.{0,12}單面/.test(source)) result.coverPrintSides = 1;
+  if (/封面.{0,12}雙面/.test(source)) result.coverPrintSides = 2;
   const coverColorCount = parseScopedColorCount(source, '封面');
   const innerColorCount =
     parseScopedColorCount(source, '內頁') || parseScopedColorCount(source, '內文');

@@ -33,7 +33,7 @@ export default function QuotePdfModal({ isOpen, onClose, result }) {
     ['內頁印刷', `${formatNumber(printing.innerKiloRuns, 2)} 千車 x ${printing.innerBillingColorCount} 計價色 x ${units.billingUnits} 台`, printing.innerPrintingCost],
     ['封面印刷', `${formatNumber(printing.coverKiloRuns, 2)} 千車 x ${printing.coverBillingColorCount} 計價色`, printing.coverPrintingCost],
     ['後加工', finishing.selectedFinishing.join('、') || '無', finishing.finishingCost],
-    ['裝訂', `${binding.bindingType}，計 ${formatNumber(binding.bindingQuantity)} 本`, binding.bindingCost],
+    ['裝訂', `${binding.bindingType}，單價 ${binding.bindingUnitPrice}，基本價 ${formatCurrency(binding.bindingBasePrice)}`, binding.bindingCost],
   ];
 
   return (

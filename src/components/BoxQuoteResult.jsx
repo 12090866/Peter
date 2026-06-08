@@ -36,7 +36,7 @@ export default function BoxQuoteResult({ result, debugMode }) {
 
   return (
     <div className="quote-result">
-      <QuoteSummaryCard total={total} debugMode={debugMode} />
+      <QuoteSummaryCard total={total} debugMode={debugMode} unitLabel="個" />
       <WarningPanel warnings={warnings} />
 
       {debugMode && (
@@ -136,9 +136,6 @@ export default function BoxQuoteResult({ result, debugMode }) {
             ) : (
               <PriceRow label="裱浪" value="無" />
             )}
-            <PriceRow label="浪紙成本合計" value={finishing.corrugatedPaperCost} isCurrency />
-            <PriceRow label="裱浪加工合計" value={finishing.mountingCost} isCurrency />
-            <PriceRow label="裱浪小計" value={finishing.corrugatedCost} isCurrency highlight />
             <div className="breakdown-divider" />
             <PriceRow
               label="軋型"
@@ -153,6 +150,25 @@ export default function BoxQuoteResult({ result, debugMode }) {
               isCurrency
               formula={`${input.quantity} 個 x ${input.gluingUnitPrice}`}
               showFormula={input.gluingEnabled}
+            />
+          </BreakdownCard>
+
+          <BreakdownCard title="彩盒總計">
+            <PriceRow label="紙張成本" value={paper.paperCost} isCurrency />
+            <PriceRow label="製版費" value={plates.plateCost} isCurrency />
+            <PriceRow label="印刷費" value={printing.printingCost} isCurrency />
+            <PriceRow label="上光費" value={finishing.coatingCost} isCurrency />
+            <PriceRow label="裱浪費" value={finishing.corrugatedCost} isCurrency />
+            <PriceRow label="軋型費" value={finishing.dieCutCost} isCurrency />
+            <PriceRow label="糊盒費" value={finishing.gluingCost} isCurrency />
+            <div className="breakdown-divider" />
+            <PriceRow label="總價" value={total.totalPrice} isCurrency highlight />
+            <PriceRow
+              label="單個成本"
+              value={total.unitPrice}
+              isCurrency
+              formula={`${Math.round(total.totalPrice).toLocaleString('zh-TW')} / ${input.quantity}`}
+              showFormula
             />
           </BreakdownCard>
         </>
