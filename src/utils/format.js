@@ -1,6 +1,9 @@
-export function formatCurrency(amount, showPrefix = true) {
+export function formatCurrency(amount, showPrefix = true, decimals = 0) {
   const value = Number.isFinite(Number(amount)) ? Number(amount) : 0;
-  const formatted = Math.round(value).toLocaleString('zh-TW');
+  const formatted = value.toLocaleString('zh-TW', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
   return showPrefix ? `NT$ ${formatted}` : formatted;
 }
 

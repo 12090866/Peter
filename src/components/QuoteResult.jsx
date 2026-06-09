@@ -88,7 +88,14 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
               <h4 className="breakdown-section-title">封面</h4>
               <PriceRow label="紙張" value={paper.coverPaper} />
               <PriceRow label="令價" value={paper.coverReamPrice} isCurrency />
-              <PriceRow label="張數" value={paper.coverSheets} unit="張" />
+              <PriceRow label="封面模數" value={paper.coverModulo} unit="模" />
+              <PriceRow
+                label="張數"
+                value={paper.coverSheets}
+                unit="張"
+                formula={`${input.quantity} / ${paper.coverModulo}`}
+                showFormula
+              />
               <PriceRow label="令數" value={paper.coverReams} unit="令" />
               <PriceRow label="封面紙成本" value={paper.coverPaperCost} isCurrency highlight />
             </div>
@@ -123,6 +130,7 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
               formula={`${printing.coverKiloRuns.toFixed(2)} 千車 x ${printing.coverBillingColorCount} 計價色`}
               showFormula
             />
+            <PriceRow label="封面實際車數" value={printing.coverRuns} unit="車" />
             <PriceRow
               label="內頁印刷"
               value={printing.innerPrintingCost}
@@ -152,7 +160,7 @@ export default function QuoteResult({ result, debugMode, onOpenPdfModal }) {
             <div className="breakdown-divider" />
             <PriceRow label="裝訂方式" value={binding.bindingType} />
             <PriceRow label="計價本數" value={binding.bindingQuantity} unit="本" />
-            <PriceRow label="裝訂單價" value={binding.bindingUnitPrice} isCurrency />
+            <PriceRow label="裝訂單價" value={binding.bindingUnitPrice} isCurrency currencyDecimals={2} />
             <PriceRow label="裝訂基本價" value={binding.bindingBasePrice} isCurrency />
             <PriceRow
               label="裝訂變動價"

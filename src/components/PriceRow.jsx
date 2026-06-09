@@ -8,9 +8,10 @@ export default function PriceRow({
   showFormula = false,
   highlight = false,
   isCurrency = false,
+  currencyDecimals = 0,
 }) {
   const displayValue = isCurrency
-    ? formatCurrency(value)
+    ? formatCurrency(value, true, currencyDecimals)
     : typeof value === 'number'
       ? formatNumber(value, Number.isInteger(value) ? 0 : 2)
       : value;

@@ -36,6 +36,8 @@ export function parseNaturalLanguage(text) {
     parseScopedColorCount(source, '內頁') || parseScopedColorCount(source, '內文');
   if (coverColorCount) result.coverColorCount = coverColorCount;
   if (innerColorCount) result.innerColorCount = innerColorCount;
+  const coverModulo = parseCoverModulo(source);
+  if (coverModulo) result.coverModulo = coverModulo;
   const colorCount = parseColorCount(source);
   if (colorCount && !coverColorCount && !innerColorCount) {
     result.innerColorCount = colorCount;
@@ -191,6 +193,16 @@ function parseScopedPaperType(source, scope) {
 
 function parseScopedColorCount(source, scope) {
   return parseColorCount(getScopedSegment(source, scope, 24));
+}
+
+function parseCoverModulo(source) {
+  const match =
+    source.match(/(?:封面模數|封面.{0,8}模數|一張大紙|大紙|封面)\s*(\d+)\s*模/) ||
+    source.match(/(?:封面模數|模數)\s*(\d+)/);
+
+  if (!match) return null;
+  const value = Number(match[1]);
+  return value > 0 ? value : null;
 }
 
 function getScopedSegment(source, scope, maxLength) {

@@ -19,6 +19,7 @@ export default function App() {
     pages: 84,
     quantity: 500,
     coverPaperType: '銅西卡250p',
+    coverModulo: 4,
     coverPrintSides: 1,
     coverColorCount: 4,
     paperType: '高級道林120p',

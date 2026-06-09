@@ -283,10 +283,14 @@ export function calculateQuote(input) {
   const coverColorCount = Number(
     normalizedInput.coverColorCount || defaultCoverColorCount,
   );
+  const coverModulo = Math.max(
+    1,
+    Number(normalizedInput.coverModulo || sizeRule.coverModulo),
+  );
   const paper = calculatePaper({
     quantity,
     theoreticalUnits: units.theoreticalUnits,
-    coverModulo: sizeRule.coverModulo,
+    coverModulo,
     paperSystem: sizeRule.paperSystem,
     selectedPaper: normalizedInput.paperType,
     selectedCoverPaper: normalizedInput.coverPaperType,

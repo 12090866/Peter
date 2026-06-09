@@ -177,6 +177,17 @@ export default function QuoteForm({ input, onChange, debugMode }) {
               ))}
             </select>
           </div>
+          <div className={`form-group field-transition ${getHighlightClass('coverModulo')}`}>
+            <label className="form-label">封面模數</label>
+            <input
+              type="number"
+              className="form-input"
+              value={input.coverModulo ?? ''}
+              min="1"
+              onChange={(event) => handleNumberChange('coverModulo', event.target.value)}
+            />
+            <p className="form-hint">例：一張大紙 4 模，1000 本 / 4 = 250 車。</p>
+          </div>
 
           {debugMode && (
             <>
